@@ -32,13 +32,6 @@ export class Article extends BaseEntity {
     @Column({ comment: '是否发布', default: false })
     isPublished?: boolean;
 
-    @Column({
-        comment: '发布时间',
-        type: 'varchar',
-        nullable: true,
-    })
-    published_at?: Date | null;
-
     /**
      * 文章关联的分类
      *
@@ -50,6 +43,13 @@ export class Article extends BaseEntity {
     })
     @JoinTable()
     categories!: Category[];
+
+    @Column({
+        comment: '发布时间',
+        type: 'varchar',
+        nullable: true,
+    })
+    published_at?: Date | null;
 
     /**
      * 文章下的评论

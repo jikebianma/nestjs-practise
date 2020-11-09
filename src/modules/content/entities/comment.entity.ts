@@ -1,6 +1,7 @@
 import {
     BaseEntity,
     Column,
+    CreateDateColumn,
     Entity,
     ManyToOne,
     PrimaryGeneratedColumn,
@@ -36,4 +37,9 @@ export class Comment extends BaseEntity {
         onUpdate: 'CASCADE',
     })
     article!: Article;
+
+    @CreateDateColumn({
+        comment: '创建时间',
+    })
+    created_at!: Date;
 }
