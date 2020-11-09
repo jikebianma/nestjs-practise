@@ -1,4 +1,4 @@
-import { BaseController } from '@/core';
+import { BaseController, ParseUUIDEntityPipe } from '@/core';
 import {
     CreateArticleDto,
     QueryArticleDto,
@@ -11,12 +11,11 @@ import {
     Delete,
     Get,
     Param,
-    ParseUUIDPipe,
     Patch,
     Post,
     Query,
-    ValidationPipe,
 } from '@nestjs/common';
+import { Article } from '../../entities';
 
 @Controller('articles')
 export class ArticleController extends BaseController {
@@ -26,31 +25,22 @@ export class ArticleController extends BaseController {
 
     @Get()
     async index(
-        @Query(
-            new ValidationPipe({
-                transform: true,
-                forbidUnknownValues: true,
-            }),
-        )
+        @Query()
         { category }: QueryArticleDto,
     ) {
         return await this.articleService.findList({ category });
     }
 
     @Get(':id')
-    async show(@Param('id', new ParseUUIDPipe()) id: string) {
-        return await this.articleService.findOneOrFail(id);
+    async show(
+        @Param('id', new ParseUUIDEntityPipe(Article)) article: Article,
+    ) {
+        return await this.articleService.findOneOrFail(article.id);
     }
 
     @Post()
     async store(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                forbidUnknownValues: true,
-                groups: ['create'],
-            }),
-        )
+        @Body()
         data: CreateArticleDto,
     ) {
         return await this.articleService.create(data);
@@ -58,21 +48,16 @@ export class ArticleController extends BaseController {
 
     @Patch()
     async update(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                forbidUnknownValues: true,
-                skipMissingProperties: true,
-                groups: ['update'],
-            }),
-        )
+        @Body()
         data: UpdateArticleDto,
     ) {
         return await this.articleService.update(data);
     }
 
     @Delete(':id')
-    async destroy(@Param('id', new ParseUUIDPipe()) id: string) {
-        return await this.articleService.delete(id);
+    async destroy(
+        @Param('id', new ParseUUIDEntityPipe(Article)) article: Article,
+    ) {
+        return await this.articleService.delete(article.id);
     }
 }

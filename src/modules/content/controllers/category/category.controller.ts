@@ -1,4 +1,4 @@
-import { BaseController } from '@/core';
+import { BaseController, ParseUUIDEntityPipe } from '@/core';
 import { CreateCategoryDto, UpdateCategoryDto } from '@/modules/content/dtos';
 import { CategoryService } from '@/modules/content/services';
 import {
@@ -7,11 +7,10 @@ import {
     Delete,
     Get,
     Param,
-    ParseUUIDPipe,
     Patch,
     Post,
-    ValidationPipe,
 } from '@nestjs/common';
+import { Category } from '../../entities';
 
 @Controller('categories')
 export class CategoryController extends BaseController {
@@ -25,19 +24,15 @@ export class CategoryController extends BaseController {
     }
 
     @Get(':id')
-    async show(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.categoryService.findOneOrFail(id);
+    async show(
+        @Param('id', new ParseUUIDEntityPipe(Category)) category: Category,
+    ) {
+        return this.categoryService.findOneOrFail(category.id);
     }
 
     @Post()
     async store(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                forbidUnknownValues: true,
-                groups: ['create'],
-            }),
-        )
+        @Body()
         data: CreateCategoryDto,
     ) {
         return this.categoryService.create(data);
@@ -45,21 +40,16 @@ export class CategoryController extends BaseController {
 
     @Patch()
     async update(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                forbidUnknownValues: true,
-                skipMissingProperties: true,
-                groups: ['update'],
-            }),
-        )
+        @Body()
         data: UpdateCategoryDto,
     ) {
         return this.categoryService.update(data);
     }
 
     @Delete(':id')
-    async destroy(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.categoryService.delete(id);
+    async destroy(
+        @Param('id', new ParseUUIDEntityPipe(Category)) category: Category,
+    ) {
+        return this.categoryService.delete(category.id);
     }
 }

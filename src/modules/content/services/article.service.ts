@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SelectQueryBuilder } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { CreateArticleDto, UpdateArticleDto } from '../dtos';
-import { Article, Category } from '../entities';
+import { Article } from '../entities';
 import { ArticleRepository, CategoryRepository } from '../repositories';
 import { CategoryService } from './category.service';
 
@@ -39,40 +39,21 @@ export class ArticleService {
         return item;
     }
 
-    async create(createDto: CreateArticleDto) {
-        const { categories, ...createData } = createDto;
-        const data: Omit<CreateArticleDto, 'categories'> & {
-            categories?: Category[];
-        } = { ...createData };
-        if (categories) {
-            data.categories = await this.categoryRepository.findByIds(
-                categories,
-            );
-        }
+    async create(data: CreateArticleDto) {
         const item = await this.articleRepository.save(data);
         return this.findOneOrFail(item.id);
     }
 
-    async update(updateDto: UpdateArticleDto) {
-        const { categories, ...updateData } = updateDto;
-        const data: Omit<UpdateArticleDto, 'categories'> = {
-            ...updateData,
-        };
-        const article = await this.findOneOrFail(updateData.id);
-        if (categories) {
-            const categorieItems = await this.categoryRepository.findByIds(
-                categories,
-            );
+    async update(data: UpdateArticleDto) {
+        const article = await this.findOneOrFail(data.id);
+        if (data.categories) {
             await this.articleRepository
                 .createQueryBuilder()
                 .relation(Article, 'categories')
                 .of(article)
-                .addAndRemove(categorieItems, article.categories);
+                .addAndRemove(data.categories, article.categories);
         }
-        if (Object.keys(data).length > 0) {
-            await this.articleRepository.save(data);
-        }
-
+        await this.articleRepository.save(data);
         return await this.findOneOrFail(data.id);
     }
 

@@ -15,26 +15,12 @@ export class CategoryService {
         return await this.categoryRepository.findOneOrFail(id);
     }
 
-    async create(createDto: CreateCategoryDto) {
-        const { parent, ...createData } = createDto;
-        const data: Omit<CreateCategoryDto, 'parent'> & {
-            parent?: Category;
-        } = { ...createData };
-        if (parent) {
-            data.parent = await this.categoryRepository.findOneOrFail(parent);
-        }
+    async create(data: CreateCategoryDto) {
         const item = await this.categoryRepository.save(data);
         return this.findOneOrFail(item.id);
     }
 
-    async update(updateDto: UpdateCategoryDto) {
-        const { parent, ...updateData } = updateDto;
-        const data: Omit<UpdateCategoryDto, 'parent'> & {
-            parent?: Category;
-        } = { ...updateData };
-        if (parent) {
-            data.parent = await this.categoryRepository.findOneOrFail(parent);
-        }
+    async update(data: UpdateCategoryDto) {
         await this.categoryRepository.save(data);
         return await this.findOneOrFail(data.id);
     }
