@@ -1,4 +1,4 @@
-import { BaseSubscriber } from '@/core';
+import { BaseSubscriber, time } from '@/core';
 import { EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
 import { Article } from '../entities';
 
@@ -16,14 +16,14 @@ export class ArticleSubscriber extends BaseSubscriber<Article> {
 
     async beforeInsert(event: InsertEvent<Article>) {
         if (event.entity.isPublished) {
-            event.entity.published_at = new Date();
+            event.entity.published_at = time().toDate();
         }
     }
 
     async beforeUpdate(event: UpdateEvent<Article>) {
         if (this.isUpdated('isPublished', event)) {
             event.entity.published_at = event.entity.isPublished
-                ? new Date()
+                ? time().toDate()
                 : null;
         }
     }

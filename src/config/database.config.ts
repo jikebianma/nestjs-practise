@@ -1,18 +1,55 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import {
+    ConfigRegister,
+    DatabaseConfig,
+    databasePath,
+    env,
+    rootPath,
+    srcPath,
+} from '@/core';
 
-export const database: TypeOrmModuleOptions = {
-    type: 'mysql',
-    host: '127.0.0.1',
-    port: 3306,
-    username: 'dev',
-    password: '12345678r',
-    database: 'dev1',
-    // 自动同步模型,仅在开发环境使用
-    // 后面我们讲完《配置优化》和《自定义命令》后这个配置就不需要了
-    synchronize: true,
-    // 这个配置为了自动加载模型类,而不去从glob匹配中读取
-    // 比如使用webpack打包会打成单文件js,那么通过遍历的方式就无法获取模型
-    autoLoadEntities: true,
-    // 所有表的表前缀,可选设置
-    // entityPrefix: 'jkxk_',
-};
+export const database: ConfigRegister<DatabaseConfig> = () => ({
+    default: env('OPTION_NAME', 'mysql'),
+    enabled: [],
+    connections: [
+        {
+            name: 'sqlite',
+            type: 'sqlite',
+            database: rootPath(env('DATABASE_PATH', 'database.sqlite')),
+        },
+        {
+            name: 'mysql',
+            type: 'mysql',
+            host: env('DATABASE_HOST', '127.0.0.1'),
+            port: env('DATABASE_PORT', (v) => Number(v), 3306),
+            username: env('DATABASE_USERNAME', 'root'),
+            password: env('DATABASE_PASSWORD', '123456'),
+            database: env('DATABASE_NAME', 'cms'),
+        },
+        {
+            name: 'mysql2',
+            type: 'mysql',
+            host: env('DATABASE_HOST', '127.0.0.1'),
+            port: env('DATABASE_PORT', (v) => Number(v), 3306),
+            username: env('DATABASE_USERNAME', 'root'),
+            password: env('DATABASE_PASSWORD', '123456'),
+            database: env('DATABASE_NAME', 'gkr'),
+        },
+    ],
+    common: {
+        dropSchema: false,
+        synchronize: true,
+        logging: ['error'],
+        entities: [srcPath('modules/**/entities/**/*.entity{.ts,.js}', false)],
+        subscribers: [
+            srcPath('modules/**/subscribers/**/*.subscriber{.ts,.js}', false),
+        ],
+        migrations: [databasePath('migration/**/*{.ts,.js}', false)],
+        seeds: [databasePath('seeder/**/*.seed{.js,.ts}', false)],
+        factories: [databasePath('factories/**/*.factory{.js,.ts}', false)],
+        cli: {
+            entitiesDir: srcPath('entities', false),
+            migrationsDir: databasePath('migration', false),
+            subscribersDir: srcPath('subscribers', false),
+        },
+    },
+});

@@ -1,3 +1,4 @@
+import { time } from '@/core';
 import {
     BaseEntity,
     Column,
@@ -32,13 +33,6 @@ export class Article extends BaseEntity {
     @Column({ comment: '是否发布', default: false })
     isPublished?: boolean;
 
-    @Column({
-        comment: '发布时间',
-        type: 'varchar',
-        nullable: true,
-    })
-    published_at?: Date | null;
-
     /**
      * 文章关联的分类
      *
@@ -60,13 +54,33 @@ export class Article extends BaseEntity {
     @OneToMany(() => Comment, (comment) => comment.article, { cascade: true })
     comments!: Comment[];
 
+    @Column({
+        comment: '发布时间',
+        type: 'varchar',
+        nullable: true,
+        transformer: {
+            from: (date) =>
+                date ? time({ date }).format('YYYY-MM-DD HH:mm:ss') : null,
+            to: (date?: Date | null) => date || null,
+        },
+    })
+    published_at?: Date | null;
+
     @CreateDateColumn({
         comment: '创建时间',
+        transformer: {
+            from: (date) => time({ date }).format('YYYY-MM-DD HH:mm:ss'),
+            to: (date) => date,
+        },
     })
     created_at!: Date;
 
     @UpdateDateColumn({
         comment: '更新时间',
+        transformer: {
+            from: (date) => time({ date }).format('YYYY-MM-DD HH:mm:ss'),
+            to: (date) => date,
+        },
     })
     updated_at!: Date;
 }

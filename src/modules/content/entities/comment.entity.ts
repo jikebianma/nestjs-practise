@@ -1,6 +1,8 @@
+import { time } from '@/core';
 import {
     BaseEntity,
     Column,
+    CreateDateColumn,
     Entity,
     ManyToOne,
     PrimaryGeneratedColumn,
@@ -36,4 +38,13 @@ export class Comment extends BaseEntity {
         onUpdate: 'CASCADE',
     })
     article!: Article;
+
+    @CreateDateColumn({
+        comment: '创建时间',
+        transformer: {
+            from: (date) => time({ date }).format('YYYY-MM-DD HH:mm:ss'),
+            to: (date) => date,
+        },
+    })
+    created_at!: Date;
 }
