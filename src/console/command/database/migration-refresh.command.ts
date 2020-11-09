@@ -37,8 +37,13 @@ export const builder = {
     },
     seeder: {
         type: 'string',
-        alias: 'sd',
+        alias: 'd',
         describe: 'Specific seeder class name to run.',
+    },
+    force: {
+        type: 'boolean',
+        alias: 'o',
+        describe: 'Run migration after delete all tables',
     },
 } as const;
 

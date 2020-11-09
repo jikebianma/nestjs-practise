@@ -37,7 +37,7 @@ export const database: ConfigRegister<DatabaseConfig> = () => ({
     ],
     common: {
         dropSchema: false,
-        synchronize: true,
+        synchronize: false,
         logging: ['error'],
         entities: [srcPath('modules/**/entities/**/*.entity{.ts,.js}', false)],
         subscribers: [

@@ -34,7 +34,7 @@ export const builder = {
     },
     seeder: {
         type: 'string',
-        alias: 'sd',
+        alias: 'd',
         describe: 'Specific seeder class name to run.',
     },
 } as const;

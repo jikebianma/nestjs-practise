@@ -23,8 +23,8 @@ export abstract class BaseSubscriber<T>
             this.connection.subscribers.push(this);
         } else {
             this.connection = getConnection(getCurrentDb('name'));
+            this.em = this.connection.manager;
         }
-        this.em = this.connection.manager;
     }
 
     abstract listenTo(): ObjectType<T>;

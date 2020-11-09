@@ -1,7 +1,7 @@
 import { getCurrentDb } from '@/core';
 import chalk from 'chalk';
 import ora from 'ora';
-import { execShell } from '../../common';
+import { execShell, panic } from '../../common';
 import { MigrationCreateArguments } from '../types';
 import { getTypeorm } from './typeorm';
 
@@ -13,15 +13,14 @@ export const MigrationCreateHandler = async (
         args.name
     } -c ${getCurrentDb('name')}`;
     if (args.dir) command = `${command} -d ${args.dir}`;
-    const spinner = ora('Start to revert migration').start();
+    const spinner = ora('Start to create migration').start();
     try {
         await execShell(command);
         spinner.succeed(
             chalk.greenBright.underline('👍 Finished create migration'),
         );
     } catch (err) {
-        console.log(chalk.red(err));
-        spinner.fail(chalk.red('\n❌ Create migration failed!'));
-        process.exit(0);
+        panic(spinner, 'Create migration failed!', err);
     }
+    process.exit(0);
 };

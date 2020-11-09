@@ -7,7 +7,8 @@
     "license": "UNLICENSED",
     "scripts": {
         "ts-node": "cross-env NODE_ENV=development ts-node --files -T -r tsconfig-paths/register",
-        "console": "yarn ts-node ./src/console/bin.ts",
+        "console": "yarn prebuild && yarn ts-node ./src/console/bin.ts",
+        "typeorm": "yarn ts-node ./node_modules/typeorm/cli.js --config console/dboptions.ts",
         "prebuild": "rimraf dist",
         "build": "yarn prebuild && cross-env NODE_ENV=production nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

@@ -1,12 +1,14 @@
 import { getCurrentDb } from '@/core';
 import chalk from 'chalk';
 import ora from 'ora';
-import { execShell } from '../../common';
-import { MigrationRunArguments } from '../types';
+import { execShell, panic } from '../../common';
+import { MigrationRefreshArguments } from '../types';
 import { SeedHandler } from './seed.handler';
 import { getTypeorm } from './typeorm';
 
-export const MigrationRefreshHandler = async (args: MigrationRunArguments) => {
+export const MigrationRefreshHandler = async (
+    args: MigrationRefreshArguments,
+) => {
     const prefix = await getTypeorm(args);
     let suffix = `-c ${getCurrentDb('name')}`;
     if (args.transaction) suffix = `${suffix} -t ${args.transaction}`;
@@ -14,15 +16,15 @@ export const MigrationRefreshHandler = async (args: MigrationRunArguments) => {
         revert: `${prefix} migration:revert ${suffix}`,
         run: `${prefix} migration:run ${suffix}`,
     };
-    let spinner = ora('Start to revert migration').start();
+    let spinner = ora('Start to destory db').start();
     try {
-        await execShell(commands.revert, args.pretty);
-        spinner.succeed(
-            chalk.greenBright.underline('👍 Revert migration successed'),
-        );
+        args.force
+            ? await getCurrentDb('connection').dropDatabase()
+            : await execShell(commands.revert, args.pretty);
+        spinner.succeed(chalk.greenBright.underline('👍 Destory db successed'));
     } catch (err) {
         console.log(chalk.red(err));
-        spinner.fail(chalk.red('\n❌ Revert migration failed!'));
+        spinner.fail(chalk.red('\n❌ Destory db failed!'));
         process.exit(0);
     }
 
@@ -34,9 +36,7 @@ export const MigrationRefreshHandler = async (args: MigrationRunArguments) => {
             chalk.greenBright.underline('👍 Run migration successed'),
         );
     } catch (err) {
-        console.log(chalk.red(err));
-        spinner.fail(chalk.red('\n❌ Run migration failed!'));
-        process.exit(0);
+        panic(spinner, 'Run migration failed!', err);
     }
 
     if (args.seed) {

@@ -70,7 +70,7 @@ export function printError(message: string, error?: any) {
     console.log('\n❌ ', chalk.red(message));
     if (error) {
         // tslint:disable-next-line
-        console.error(error);
+        console.log(chalk.red(error));
     }
 }
 
@@ -80,11 +80,11 @@ export function printError(message: string, error?: any) {
  * @export
  * @param {ora.Ora} spinner
  * @param {string} message
- * @param {Error} [error]
+ * @param {*} [error]
  */
-export function panic(spinner: ora.Ora, message: string, error?: Error) {
-    spinner.fail(message);
-    if (error) console.error(error);
+export function panic(spinner: ora.Ora, message: string, error?: any) {
+    if (error) console.log(chalk.red(error));
+    spinner.fail(chalk.red(`\n❌${message}`));
     process.exit(1);
 }
 

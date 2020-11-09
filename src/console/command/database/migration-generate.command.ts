@@ -35,6 +35,12 @@ export const builder = {
         alias: 'f',
         describe: 'Name of the file with connection configuration.',
     },
+    force: {
+        type: 'boolean',
+        alias: 'o',
+        describe:
+            'Generate migrations after delete all tables after delete all database tables',
+    },
 } as const;
 
 export const handler = async (

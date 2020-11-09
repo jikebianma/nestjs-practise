@@ -1,7 +1,7 @@
 import { getCurrentDb } from '@/core';
 import chalk from 'chalk';
 import ora from 'ora';
-import { execShell } from '../../common';
+import { execShell, panic } from '../../common';
 import { MigrationRevertArguments } from '../types';
 import { getTypeorm } from './typeorm';
 
@@ -19,8 +19,7 @@ export const MigrationRevertHandler = async (
             chalk.greenBright.underline('👍 Revert migration successed'),
         );
     } catch (err) {
-        console.log(chalk.red(err));
-        spinner.fail(chalk.red('\n❌ Revert migration failed!'));
+        panic(spinner, 'Revert migration failed!', err);
     }
     process.exit(0);
 };

@@ -1,7 +1,7 @@
 import { getCurrentDb } from '@/core';
 import chalk from 'chalk';
 import ora from 'ora';
-import { execShell } from '../../common';
+import { execShell, panic } from '../../common';
 import { MigrationRunArguments } from '../types';
 import { SeedHandler } from './seed.handler';
 import { getTypeorm } from './typeorm';
@@ -20,8 +20,7 @@ export const MigrationRunHandler = async (
             chalk.greenBright.underline('👍 Run migration successed'),
         );
     } catch (err) {
-        console.log(chalk.red(err));
-        spinner.fail(chalk.red('\n❌ Run migration failed!'));
+        panic(spinner, 'Run migration failed!', err);
     }
     if (args.seed) {
         await SeedHandler(args);
