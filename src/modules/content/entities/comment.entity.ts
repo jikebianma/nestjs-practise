@@ -18,7 +18,7 @@ export class Comment extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column({ comment: '评论内容' })
+    @Column({ comment: '评论内容', type: 'longtext' })
     body!: string;
 
     @TreeChildren()
