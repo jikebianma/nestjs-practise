@@ -25,7 +25,7 @@ export class Article extends BaseEntity {
     body!: string;
 
     @Column({ comment: '文章描述', nullable: true })
-    description?: string;
+    summary?: string;
 
     @Column({ comment: '关键字', type: 'simple-array', nullable: true })
     keywords?: string[];
