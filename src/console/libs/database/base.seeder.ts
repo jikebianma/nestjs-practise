@@ -10,6 +10,8 @@ import {
     SeederConstructor,
 } from './types';
 
+const getRandomIndex = (count: number) =>
+    Math.floor(Math.random() * Math.floor(count - 1));
 export abstract class BaseSeeder implements Seeder {
     protected connection!: Connection;
 
@@ -72,5 +74,30 @@ export abstract class BaseSeeder implements Seeder {
             this.args,
         );
         await subSeeder.load(dataFactory, this.connection);
+    }
+
+    protected randItemData<
+        T extends { id: string; [key: string]: any } = {
+            id: string;
+            [key: string]: any;
+        }
+    >(list: T[]) {
+        return list[getRandomIndex(list.length)];
+    }
+
+    protected randListData<
+        T extends { id: string; [key: string]: any } = {
+            id: string;
+            [key: string]: any;
+        }
+    >(list: T[]) {
+        const result: T[] = [];
+        for (let i = 0; i <= getRandomIndex(list.length); i++) {
+            const random = this.randItemData<T>(list);
+            if (!result.find((item) => item.id === random.id)) {
+                result.push(random);
+            }
+        }
+        return result;
     }
 }

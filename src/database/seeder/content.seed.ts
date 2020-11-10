@@ -2,6 +2,7 @@ import { BaseSeeder, DataFactory, panic } from '@/console/libs';
 import { databasePath } from '@/core';
 import { CategoryRepository } from '@/modules/content';
 import { Article, Category, Comment } from '@/modules/content/entities';
+import { User } from '@/modules/user/entities';
 import faker from 'faker';
 import fs from 'fs';
 import { Connection, In } from 'typeorm';
@@ -27,20 +28,8 @@ export default class ContentSeeder extends BaseSeeder {
         await this.loadArticles(articles);
     }
 
-    private getRandomCategories(cates: Category[]) {
-        const getRandomIndex = () =>
-            Math.floor(Math.random() * Math.floor(cates.length - 1));
-        const result: Category[] = [];
-        for (let i = 0; i <= getRandomIndex(); i++) {
-            const cate = cates[getRandomIndex()];
-            if (!result.find((item) => item.id === cate.id)) {
-                result.push(cate);
-            }
-        }
-        return result;
-    }
-
     private async genRandomComments(
+        users: User[],
         article: Article,
         count: number,
         parent?: Comment,
@@ -49,17 +38,19 @@ export default class ContentSeeder extends BaseSeeder {
         for (let i = 0; i < count; i++) {
             const comment = new Comment();
             comment.body = faker.lorem.paragraph(
-                Math.floor(Math.random() * 28) + 1,
+                Math.floor(Math.random() * 18) + 1,
             );
             comment.article = article;
             if (parent) {
                 comment.parent = parent;
             }
+            comment.creator = this.randItemData(users);
             comments.push(await this.em.save(comment));
             if (Math.random() >= 0.8) {
                 comment.children = await this.genRandomComments(
+                    users,
                     article,
-                    Math.floor(Math.random() * 5) + 1,
+                    Math.floor(Math.random() * 2),
                     comment,
                 );
                 await this.em.save(comment);
@@ -85,6 +76,7 @@ export default class ContentSeeder extends BaseSeeder {
 
     private async loadArticles(data: IArticleData[]) {
         const allCates = await this.em.find(Category);
+        const allUsers = await this.em.find(User);
         for (const item of data) {
             const contentPath = databasePath(
                 `seeder/data/article-bodies/${item.contentFile}`,
@@ -102,6 +94,9 @@ export default class ContentSeeder extends BaseSeeder {
                 title: item.title,
                 body: fs.readFileSync(contentPath, 'utf8'),
                 isPublished: true,
+                author: (await this.em.findOne(User, {
+                    where: { username: item.author },
+                }))!,
             };
             if (item.summary) {
                 options.summary = item.summary;
@@ -113,17 +108,20 @@ export default class ContentSeeder extends BaseSeeder {
             }
             const article = await this.factory(Article)(options).create();
             await this.genRandomComments(
+                allUsers,
                 article,
-                Math.floor(Math.random() * 5) + 0,
+                Math.floor(Math.random() * 5),
             );
         }
-        const redoms = await this.factory(Article)({
-            categories: this.getRandomCategories(allCates),
+        const redoms = await this.factory(Article)<IArticleFactoryOptions>({
+            author: this.randItemData(await this.em.find(User)),
+            categories: this.randListData(allCates),
         }).createMany(100);
         for (const redom of redoms) {
             await this.genRandomComments(
+                allUsers,
                 redom,
-                Math.floor(Math.random() * 5) + 0,
+                Math.floor(Math.random() * 2),
             );
         }
     }

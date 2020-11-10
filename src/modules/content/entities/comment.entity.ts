@@ -29,7 +29,7 @@ export class Comment extends BaseEntity {
     parent?: Comment;
 
     @ManyToOne(() => User, (user) => user.comments)
-    user!: User;
+    creator!: User;
 
     /**
      * 评论所属文章

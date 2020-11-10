@@ -79,17 +79,17 @@ export type SeederConstructor = new (
 /**
  * factory函数的接口
  */
-export interface EntityFactoryDefinition<Entity, Settings> {
+export interface EntityFactoryDefinition<Entity, Options> {
     entity: ObjectType<Entity>;
-    factory: DataFactoryFunction<Entity, Settings>;
+    factory: DataFactoryFunction<Entity, Options>;
 }
 
 /**
  * factory回调函数接口
  */
-export type DataFactoryFunction<Entity, Settings> = (
+export type DataFactoryFunction<Entity, Options> = (
     faker: typeof Faker,
-    settings?: Settings,
+    options?: Options,
 ) => Promise<Entity>;
 
 export type EntityProperty<Entity> = {
@@ -101,4 +101,4 @@ export type EntityProperty<Entity> = {
  */
 export type DataFactory = <Entity>(
     entity: ObjectType<Entity>,
-) => <Settings>(settings?: Settings) => EntityFactory<Entity, Settings>;
+) => <Options>(options?: Options) => EntityFactory<Entity, Options>;

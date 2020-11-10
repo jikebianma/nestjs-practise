@@ -1,3 +1,4 @@
+import { User } from '@/modules/user/entities';
 import { Injectable } from '@nestjs/common';
 import { SelectQueryBuilder } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
@@ -28,7 +29,9 @@ export class ArticleService {
 
     async findOne(id: string) {
         const query = await this.getQuery({}, async (called) => {
-            return called.leftJoinAndSelect('a.comments', 'c');
+            return called
+                .leftJoinAndSelect('a.comments', 'c')
+                .leftJoinAndSelect('c.creator', 'cc');
         });
         return query.where('a.id = :id', { id }).getOne();
     }
@@ -39,8 +42,11 @@ export class ArticleService {
         return item;
     }
 
-    async create(data: CreateArticleDto) {
-        const item = await this.articleRepository.save(data);
+    async create(data: CreateArticleDto, user: User) {
+        const item = await this.articleRepository.save({
+            ...data,
+            author: user,
+        });
         return this.findOneOrFail(item.id);
     }
 
@@ -74,6 +80,7 @@ export class ArticleService {
     protected async getQuery(params: FindParams = {}, callback?: FindHook) {
         let query = this.articleRepository
             .createQueryBuilder('a')
+            .leftJoinAndSelect('a.author', 'author')
             .leftJoinAndSelect('a.categories', 'cat')
             .loadRelationCountAndMap('a.commentsCount', 'a.comments');
         if (callback) {

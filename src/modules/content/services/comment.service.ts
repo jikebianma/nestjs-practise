@@ -1,3 +1,4 @@
+import { User } from '@/modules/user/entities';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,8 +12,11 @@ export class CommentService {
         private commentRepository: Repository<Comment>,
     ) {}
 
-    async create(data: CreateCommentDto) {
-        const item = await this.commentRepository.save(data);
+    async create(data: CreateCommentDto, user: User) {
+        const item = await this.commentRepository.save({
+            ...data,
+            creator: user,
+        });
         return this.commentRepository.findOneOrFail(item.id);
     }
 

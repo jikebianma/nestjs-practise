@@ -4,7 +4,8 @@ import {
     QueryArticleDto,
     UpdateArticleDto,
 } from '@/modules/content/dtos';
-import { ArticleService } from '@/modules/content/services';
+import { JwtAuthGuard, ReqUser } from '@/modules/user';
+import { User } from '@/modules/user/entities';
 import {
     Body,
     Controller,
@@ -14,8 +15,10 @@ import {
     Patch,
     Post,
     Query,
+    UseGuards,
 } from '@nestjs/common';
 import { Article } from '../../entities';
+import { ArticleService } from '../../services';
 
 @Controller('articles')
 export class ArticleController extends BaseController {
@@ -39,14 +42,17 @@ export class ArticleController extends BaseController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     async store(
         @Body()
         data: CreateArticleDto,
+        @ReqUser() user: User,
     ) {
-        return await this.articleService.create(data);
+        return await this.articleService.create(data, user);
     }
 
     @Patch()
+    @UseGuards(JwtAuthGuard)
     async update(
         @Body()
         data: UpdateArticleDto,
@@ -55,6 +61,7 @@ export class ArticleController extends BaseController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     async destroy(
         @Param('id', new ParseUUIDEntityPipe(Article)) article: Article,
     ) {

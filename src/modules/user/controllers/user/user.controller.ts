@@ -3,22 +3,27 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
     Patch,
     Query,
     SerializeOptions,
+    UseGuards,
 } from '@nestjs/common';
 import { classToPlain } from 'class-transformer';
 import { QueryUserDto, UpdateUserDto } from '../../dtos';
 import { User } from '../../entities';
+import { JwtAuthGuard } from '../../guards';
 import { UserService } from '../../services';
 
-@Controller('users')
+@Controller('manage')
 export class UserController extends BaseController {
     constructor(private readonly userService: UserService) {
         super();
     }
 
+    @Get()
+    @UseGuards(JwtAuthGuard)
     async index(@Query() { page, limit, actived }: QueryUserDto) {
         const result = await this.userService.paginate(
             {
@@ -34,6 +39,8 @@ export class UserController extends BaseController {
         };
     }
 
+    @Get()
+    @UseGuards(JwtAuthGuard)
     @SerializeOptions({
         groups: ['user-item'],
     })
@@ -45,6 +52,7 @@ export class UserController extends BaseController {
     }
 
     @Patch()
+    @UseGuards(JwtAuthGuard)
     @SerializeOptions({
         groups: ['user-item'],
     })
@@ -56,6 +64,7 @@ export class UserController extends BaseController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     @SerializeOptions({
         groups: ['user-item'],
     })

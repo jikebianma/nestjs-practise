@@ -27,8 +27,8 @@ export class AuthController extends BaseController {
      * @returns
      * @memberof AuthController
      */
-    @UseGuards(LocalAuthGuard)
     @Post('login')
+    @UseGuards(LocalAuthGuard)
     async login(
         @ReqUser() user: User,
         @Body(new ValidationPipe()) body: AuthenticationDto,
@@ -43,8 +43,8 @@ export class AuthController extends BaseController {
      * @returns
      * @memberof AuthController
      */
-    @UseGuards(JwtAuthGuard)
     @Post('logout')
+    @UseGuards(JwtAuthGuard)
     async logout(@Request() req: any) {
         return await this.authService.logout(req);
     }

@@ -86,7 +86,7 @@ export class AuthService {
     static jwtModuleFactory() {
         return JwtModule.registerAsync({
             useFactory: () => {
-                const data = config<UserConfig['jwt']>('security.jwt');
+                const data = config<UserConfig['jwt']>('user.jwt');
                 return {
                     secret: data.secret,
                     ignoreExpiration: environment() === EnviromentType.DEV,

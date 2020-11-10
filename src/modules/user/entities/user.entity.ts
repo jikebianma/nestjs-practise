@@ -70,6 +70,6 @@ export class User {
      * @type {Comment}
      * @memberof User
      */
-    @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
+    @OneToMany(() => Comment, (comment) => comment.creator, { cascade: true })
     comments!: Comment;
 }

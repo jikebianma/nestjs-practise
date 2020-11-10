@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddUser1605035193708 implements MigrationInterface {
-    name = 'AddUser1605035193708';
+export class CreateUser1605045904553 implements MigrationInterface {
+    name = 'CreateUser1605045904553';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -14,7 +14,7 @@ export class AddUser1605035193708 implements MigrationInterface {
             "CREATE TABLE `user_access_tokens` (`id` varchar(36) NOT NULL, `value` varchar(500) NOT NULL, `expired_at` varchar(255) NOT NULL COMMENT '令牌过期时间', `created_at` datetime(6) NOT NULL COMMENT '令牌创建时间' DEFAULT CURRENT_TIMESTAMP(6), `userId` varchar(36) NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB",
         );
         await queryRunner.query(
-            'ALTER TABLE `content_comments` ADD `userId` varchar(36) NULL',
+            'ALTER TABLE `content_comments` ADD `creatorId` varchar(36) NULL',
         );
         await queryRunner.query(
             'ALTER TABLE `content_articles` ADD `authorId` varchar(36) NULL',
@@ -26,7 +26,7 @@ export class AddUser1605035193708 implements MigrationInterface {
             'ALTER TABLE `user_access_tokens` ADD CONSTRAINT `FK_71a030e491d5c8547fc1e38ef82` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE NO ACTION',
         );
         await queryRunner.query(
-            'ALTER TABLE `content_comments` ADD CONSTRAINT `FK_3ec3e32832bd75f0fe472f2cc03` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION',
+            'ALTER TABLE `content_comments` ADD CONSTRAINT `FK_e1cb3604325ff0507c05e6dd8db` FOREIGN KEY (`creatorId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION',
         );
         await queryRunner.query(
             'ALTER TABLE `content_articles` ADD CONSTRAINT `FK_6331273633bc2e4a25a8a039282` FOREIGN KEY (`authorId`) REFERENCES `users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION',
@@ -38,7 +38,7 @@ export class AddUser1605035193708 implements MigrationInterface {
             'ALTER TABLE `content_articles` DROP FOREIGN KEY `FK_6331273633bc2e4a25a8a039282`',
         );
         await queryRunner.query(
-            'ALTER TABLE `content_comments` DROP FOREIGN KEY `FK_3ec3e32832bd75f0fe472f2cc03`',
+            'ALTER TABLE `content_comments` DROP FOREIGN KEY `FK_e1cb3604325ff0507c05e6dd8db`',
         );
         await queryRunner.query(
             'ALTER TABLE `user_access_tokens` DROP FOREIGN KEY `FK_71a030e491d5c8547fc1e38ef82`',
@@ -50,7 +50,7 @@ export class AddUser1605035193708 implements MigrationInterface {
             'ALTER TABLE `content_articles` DROP COLUMN `authorId`',
         );
         await queryRunner.query(
-            'ALTER TABLE `content_comments` DROP COLUMN `userId`',
+            'ALTER TABLE `content_comments` DROP COLUMN `creatorId`',
         );
         await queryRunner.query('DROP TABLE `user_access_tokens`');
         await queryRunner.query(
