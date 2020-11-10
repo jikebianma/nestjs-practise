@@ -22,7 +22,9 @@ export const MigrationRefreshHandler = async (
         args.force
             ? await connection.dropDatabase()
             : await execShell(commands.revert, args.pretty);
-        spinner.succeed(chalk.greenBright.underline('👍 Destory db successed'));
+        spinner.succeed(
+            chalk.greenBright.underline('\n 👍 Destory db successed'),
+        );
     } catch (err) {
         console.log(chalk.red(err));
         spinner.fail(chalk.red('\n❌ Destory db failed!'));
@@ -33,15 +35,16 @@ export const MigrationRefreshHandler = async (
 
     try {
         await execShell(commands.run, args.pretty);
+        await connection.close();
         spinner.succeed(
-            chalk.greenBright.underline('👍 Run migration successed'),
+            chalk.greenBright.underline('\n 👍 Run migration successed'),
         );
     } catch (err) {
         panic(spinner, 'Run migration failed!', err);
     }
 
     if (args.seed) {
-        await connection.close();
+        console.log('\n');
         await SeedHandler(args);
     }
 

@@ -17,14 +17,15 @@ export const MigrationRunHandler = async (
     const spinner = ora('Start to run migration').start();
     try {
         await execShell(command, args.pretty);
+        await connection.close();
         spinner.succeed(
-            chalk.greenBright.underline('👍 Run migration successed'),
+            chalk.greenBright.underline('\n 👍 Run migration successed'),
         );
     } catch (err) {
         panic(spinner, 'Run migration failed!', err);
     }
     if (args.seed) {
-        await connection.close();
+        console.log('\n');
         await SeedHandler(args);
     }
     process.exit(0);

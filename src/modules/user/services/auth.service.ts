@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { FastifyRequest as Request } from 'fastify';
 import { ExtractJwt } from 'passport-jwt';
 import { User } from '../entities';
-import { SecurityConfig } from '../interface';
+import { UserConfig } from '../interface';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
 
@@ -86,7 +86,7 @@ export class AuthService {
     static jwtModuleFactory() {
         return JwtModule.registerAsync({
             useFactory: () => {
-                const data = config<SecurityConfig['jwt']>('security.jwt');
+                const data = config<UserConfig['jwt']>('security.jwt');
                 return {
                     secret: data.secret,
                     ignoreExpiration: environment() === EnviromentType.DEV,

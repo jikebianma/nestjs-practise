@@ -18,7 +18,7 @@ export const MigrationGenerateHandler = async (
     try {
         await execShell(command, args.pretty);
         spinner.succeed(
-            chalk.greenBright.underline('👍 Finished generate migration'),
+            chalk.greenBright.underline('\n 👍 Finished generate migration'),
         );
     } catch (err) {
         panic(spinner, 'Generate migration failed!', err);

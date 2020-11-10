@@ -13,7 +13,7 @@ import { QueryUserDto, UpdateUserDto } from '../../dtos';
 import { User } from '../../entities';
 import { UserService } from '../../services';
 
-@Controller('user')
+@Controller('users')
 export class UserController extends BaseController {
     constructor(private readonly userService: UserService) {
         super();

@@ -1,5 +1,5 @@
 /** ************************************ AUTH CONFIG ******************************** */
-export interface SecurityConfig {
+export interface UserConfig {
     jwt: {
         secret: string;
         token_expired: number;

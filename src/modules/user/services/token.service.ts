@@ -6,7 +6,7 @@ import { FastifyReply as Response } from 'fastify';
 import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
 import { AccessToken, RefreshToken, User } from '../entities';
-import { JwtPayload, SecurityConfig } from '../interface';
+import { JwtPayload, UserConfig } from '../interface';
 
 /**
  * 令牌服务
@@ -16,13 +16,13 @@ import { JwtPayload, SecurityConfig } from '../interface';
  */
 @Injectable()
 export class TokenService {
-    private readonly config: SecurityConfig['jwt'];
+    private readonly config: UserConfig['jwt'];
 
     constructor(
         protected readonly jwtService: JwtService,
         protected readonly configure: Configure,
     ) {
-        this.config = this.configure.get<SecurityConfig['jwt']>('user.jwt')!;
+        this.config = this.configure.get<UserConfig['jwt']>('user.jwt')!;
     }
 
     /**
