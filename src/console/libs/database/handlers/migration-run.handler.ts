@@ -25,6 +25,7 @@ export const MigrationRunHandler = async (
         panic(spinner, 'Run migration failed!', err);
     }
     if (args.seed) {
+        console.log('\n');
         await SeedHandler(args);
     }
     process.exit(0);

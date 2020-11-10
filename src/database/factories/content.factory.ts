@@ -1,5 +1,5 @@
 import { defineFactory } from '@/console/libs';
-import { Article, Category, Comment } from '@/modules/content';
+import { Article, Category, Comment } from '@/modules/content/entities';
 import Faker from 'faker';
 
 export type IArticleFactoryOptions = Partial<{

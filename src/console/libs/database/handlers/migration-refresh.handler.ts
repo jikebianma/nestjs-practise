@@ -44,6 +44,7 @@ export const MigrationRefreshHandler = async (
     }
 
     if (args.seed) {
+        console.log('\n');
         await SeedHandler(args);
     }
 

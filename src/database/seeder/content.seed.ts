@@ -1,11 +1,7 @@
 import { BaseSeeder, DataFactory, panic } from '@/console/libs';
 import { databasePath } from '@/core';
-import {
-    Article,
-    Category,
-    CategoryRepository,
-    Comment,
-} from '@/modules/content';
+import { CategoryRepository } from '@/modules/content';
+import { Article, Category, Comment } from '@/modules/content/entities';
 import faker from 'faker';
 import fs from 'fs';
 import { Connection, In } from 'typeorm';
