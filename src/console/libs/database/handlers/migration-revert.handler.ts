@@ -16,7 +16,7 @@ export const MigrationRevertHandler = async (
     try {
         await execShell(command, args.pretty);
         spinner.succeed(
-            chalk.greenBright.underline('👍 Revert migration successed'),
+            chalk.greenBright.underline('\n 👍 Revert migration successed'),
         );
     } catch (err) {
         panic(spinner, 'Revert migration failed!', err);

@@ -20,20 +20,21 @@ export const ResetHandler = async (args: DbRefreshArguments) => {
             await connection.close();
             log(
                 '\n',
-                '👍 ',
+                '\n 👍 ',
                 chalk.greenBright.underline('Finished destory the database'),
             );
             process.exit(0);
         }
         await connection.synchronize();
-        spinner.succeed('Database connected');
+        await connection.close();
+        spinner.succeed(
+            chalk.greenBright.underline('\n 👍 inished reset database'),
+        );
     } catch (error) {
         panic(spinner, 'Database sync failed', error);
     }
     if (args.seed) {
         await SeedHandler(args);
     }
-    await connection.close();
-    log('\n', '👍 ', chalk.greenBright.underline('Finished reset database'));
     process.exit(0);
 };

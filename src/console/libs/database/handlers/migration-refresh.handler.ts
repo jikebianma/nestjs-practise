@@ -17,11 +17,14 @@ export const MigrationRefreshHandler = async (
         run: `${prefix} migration:run ${suffix}`,
     };
     let spinner = ora('Start to destory db').start();
+    const connection = getCurrentDb('connection');
     try {
         args.force
-            ? await getCurrentDb('connection').dropDatabase()
+            ? await connection.dropDatabase()
             : await execShell(commands.revert, args.pretty);
-        spinner.succeed(chalk.greenBright.underline('👍 Destory db successed'));
+        spinner.succeed(
+            chalk.greenBright.underline('\n 👍 Destory db successed'),
+        );
     } catch (err) {
         console.log(chalk.red(err));
         spinner.fail(chalk.red('\n❌ Destory db failed!'));
@@ -32,8 +35,9 @@ export const MigrationRefreshHandler = async (
 
     try {
         await execShell(commands.run, args.pretty);
+        await connection.close();
         spinner.succeed(
-            chalk.greenBright.underline('👍 Run migration successed'),
+            chalk.greenBright.underline('\n 👍 Run migration successed'),
         );
     } catch (err) {
         panic(spinner, 'Run migration failed!', err);

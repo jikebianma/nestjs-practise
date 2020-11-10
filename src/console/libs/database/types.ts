@@ -38,7 +38,6 @@ export interface MigrationGenerateArguments extends TypeOrmArguments {
     name: string;
     dir?: string;
     pretty?: boolean;
-    force?: boolean;
 }
 
 export interface MigrationRunArguments extends TypeOrmArguments {

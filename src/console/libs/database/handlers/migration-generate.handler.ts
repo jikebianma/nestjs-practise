@@ -16,17 +16,9 @@ export const MigrationGenerateHandler = async (
     if (args.pretty) command = `${command} -p`;
     const spinner = ora('Start to generate migration').start();
     try {
-        if (args.force) {
-            try {
-                ora('Start to destory db').start();
-                await getCurrentDb('connection').dropDatabase();
-            } catch (err) {
-                panic(spinner, 'Destory db failed!', err);
-            }
-        }
         await execShell(command, args.pretty);
         spinner.succeed(
-            chalk.greenBright.underline('👍 Finished generate migration'),
+            chalk.greenBright.underline('\n 👍 Finished generate migration'),
         );
     } catch (err) {
         panic(spinner, 'Generate migration failed!', err);

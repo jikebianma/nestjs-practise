@@ -17,7 +17,7 @@ export const MigrationCreateHandler = async (
     try {
         await execShell(command);
         spinner.succeed(
-            chalk.greenBright.underline('👍 Finished create migration'),
+            chalk.greenBright.underline('\n 👍 Finished create migration'),
         );
     } catch (err) {
         panic(spinner, 'Create migration failed!', err);
