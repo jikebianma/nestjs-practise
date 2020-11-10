@@ -1,4 +1,4 @@
-import { AppConfig,ConfigRegister,env } from '@/core';
+import { AppConfig, ConfigRegister, env } from '@/core';
 
 export const app: ConfigRegister<AppConfig> = () => ({
     debug: env('APP_DEBUG', (v) => JSON.parse(v), true),

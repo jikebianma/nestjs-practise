@@ -35,6 +35,7 @@ export async function makeCurrentDb(name: string, spinner?: ora.Ora) {
         setCurrentDb({ name });
         const connection = await makeConnection(name);
         setCurrentDb({ connection });
+
         spinner
             ? spinner.succeed(successed)
             : console.log(chalk.green(successed));

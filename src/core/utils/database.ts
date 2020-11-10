@@ -90,7 +90,7 @@ export class Database extends BaseUtil<DbOption[]> {
                 ...option,
                 autoLoadEntities: true,
             };
-            const { entities, subscribers, ...nestOption } = all;
+            const { entities, subscribers, migrations, ...nestOption } = all;
             if (option.name === this._default) {
                 const { name, ...nameNone } = nestOption;
                 return nameNone;

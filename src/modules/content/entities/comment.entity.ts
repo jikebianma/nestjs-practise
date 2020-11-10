@@ -1,4 +1,5 @@
 import { time } from '@/core';
+import { User } from '@/modules/user/entities';
 import {
     BaseEntity,
     Column,
@@ -26,6 +27,9 @@ export class Comment extends BaseEntity {
 
     @TreeParent()
     parent?: Comment;
+
+    @ManyToOne(() => User, (user) => user.comments)
+    user!: User;
 
     /**
      * 评论所属文章

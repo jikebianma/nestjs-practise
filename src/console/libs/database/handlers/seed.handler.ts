@@ -2,11 +2,12 @@ import { databasePath, dbOption, defaultDbName } from '@/core';
 import chalk from 'chalk';
 import ora from 'ora';
 import { matchGlobs, panic, requireDefault, requirePaths } from '../../common';
-import { runSeeder } from '../functions';
+import { makeCurrentDb, runSeeder } from '../functions';
 import { CLIDbOption, DbSeedArguments, SeederConstructor } from '../types';
 
 async function seederRunner(spinner: ora.Ora, args: DbSeedArguments) {
     const cname = args.connection ?? defaultDbName();
+    await makeCurrentDb(cname, spinner);
     const options: CLIDbOption = dbOption<CLIDbOption>(cname);
 
     // 根据此连接的'factories'配置require所有的factory文件
@@ -16,7 +17,6 @@ async function seederRunner(spinner: ora.Ora, args: DbSeedArguments) {
         {},
         true,
     );
-
     try {
         requirePaths(factoryFiles);
         spinner.succeed('Factories are included');

@@ -1,4 +1,5 @@
 import { time } from '@/core';
+import { User } from '@/modules/user/entities';
 import {
     BaseEntity,
     Column,
@@ -6,6 +7,7 @@ import {
     Entity,
     JoinTable,
     ManyToMany,
+    ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
@@ -53,6 +55,9 @@ export class Article extends BaseEntity {
      */
     @OneToMany(() => Comment, (comment) => comment.article, { cascade: true })
     comments!: Comment[];
+
+    @ManyToOne(() => User, (user) => user.articles)
+    author!: User;
 
     @Column({
         comment: '发布时间',

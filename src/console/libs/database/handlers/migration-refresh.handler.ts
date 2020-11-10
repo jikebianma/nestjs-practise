@@ -17,9 +17,10 @@ export const MigrationRefreshHandler = async (
         run: `${prefix} migration:run ${suffix}`,
     };
     let spinner = ora('Start to destory db').start();
+    const connection = getCurrentDb('connection');
     try {
         args.force
-            ? await getCurrentDb('connection').dropDatabase()
+            ? await connection.dropDatabase()
             : await execShell(commands.revert, args.pretty);
         spinner.succeed(chalk.greenBright.underline('👍 Destory db successed'));
     } catch (err) {
@@ -40,6 +41,7 @@ export const MigrationRefreshHandler = async (
     }
 
     if (args.seed) {
+        await connection.close();
         await SeedHandler(args);
     }
 

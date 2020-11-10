@@ -11,6 +11,7 @@ export const MigrationRunHandler = async (
     typeormCli?: string,
 ) => {
     const typeCommand = typeormCli ?? (await getTypeorm(args));
+    const connection = getCurrentDb('connection');
     let command = `${typeCommand} migration:run -c ${getCurrentDb('name')}`;
     if (args.transaction) command = `${command} -t ${args.transaction}`;
     const spinner = ora('Start to run migration').start();
@@ -23,6 +24,7 @@ export const MigrationRunHandler = async (
         panic(spinner, 'Run migration failed!', err);
     }
     if (args.seed) {
+        await connection.close();
         await SeedHandler(args);
     }
     process.exit(0);

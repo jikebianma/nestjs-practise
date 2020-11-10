@@ -26,11 +26,12 @@ export const ResetHandler = async (args: DbRefreshArguments) => {
             process.exit(0);
         }
         await connection.synchronize();
-        spinner.succeed('Database connected');
     } catch (error) {
         panic(spinner, 'Database sync failed', error);
     }
     if (args.seed) {
+        log('\n');
+        await connection.close();
         await SeedHandler(args);
     }
     await connection.close();
