@@ -5,6 +5,12 @@ import { getManager } from 'typeorm';
 import { Article } from '../entities';
 import { ArticleRepository } from '../repositories';
 
+/**
+ * 发布评论数据验证
+ *
+ * @export
+ * @class CreateCommentDto
+ */
 @Injectable()
 @DtoValidationoOptions()
 export class CreateCommentDto {

@@ -10,6 +10,13 @@ import {
 } from 'typeorm';
 import { Article } from './article.entity';
 
+/**
+ * 分类模型
+ *
+ * @export
+ * @class Category
+ * @extends {BaseEntity}
+ */
 @Entity('content_categories')
 @Tree('nested-set')
 export class Category extends BaseEntity {
@@ -22,11 +29,22 @@ export class Category extends BaseEntity {
     @Column({ comment: '分类标识符' })
     slug!: string;
 
+    @Column({ comment: '分类排序' })
+    order: number = 0;
+
     @TreeChildren()
     children!: Category[];
 
     @TreeParent()
     parent?: Category;
+
+    /**
+     * 分类嵌套等级,只在打平时使用
+     *
+     * @type {number}
+     * @memberof Category
+     */
+    level: number = 0;
 
     /**
      * 分类关联的文章

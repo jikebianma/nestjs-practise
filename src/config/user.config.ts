@@ -1,6 +1,8 @@
 import { ConfigRegister, env } from '@/core';
 import { UserConfig } from '@/modules/user';
-
+/**
+ * 用户模块配置
+ */
 export const user: ConfigRegister<UserConfig> = () => ({
     jwt: {
         secret: env('AUTH_TOKEN_SECRET', 'my-secret'),

@@ -17,6 +17,7 @@ export const MigrationRefreshHandler = async (
         run: `${prefix} migration:run ${suffix}`,
     };
     let spinner = ora('Start to destory db').start();
+
     const connection = getCurrentDb('connection');
     try {
         args.force

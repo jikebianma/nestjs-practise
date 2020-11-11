@@ -3,6 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { IsDefined, IsUUID } from 'class-validator';
 import { Article } from '../entities';
 import { CreateArticleDto } from './create-article.dto';
+
+/**
+ * 文章更新数据验证
+ *
+ * @export
+ * @class UpdateArticleDto
+ * @extends {PartialDto(CreateArticleDto)}
+ */
 @Injectable()
 @DtoValidationoOptions({ skipMissingProperties: true, groups: ['update'] })
 export class UpdateArticleDto extends PartialDto(CreateArticleDto) {

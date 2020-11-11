@@ -4,6 +4,13 @@ import { IsDefined, IsUUID } from 'class-validator';
 import { Category } from '../entities';
 import { CreateCategoryDto } from './create-category.dto';
 
+/**
+ * 分类更新数据验证
+ *
+ * @export
+ * @class UpdateCategoryDto
+ * @extends {PartialDto(CreateCategoryDto)}
+ */
 @Injectable()
 @DtoValidationoOptions({ skipMissingProperties: true, groups: ['update'] })
 export class UpdateCategoryDto extends PartialDto(CreateCategoryDto) {

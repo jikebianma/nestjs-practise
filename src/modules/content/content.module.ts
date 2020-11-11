@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from '../user';
 // import { UserModule } from '../user';
 import * as constollerMaps from './controllers';
 import * as dtoMaps from './dtos';
@@ -15,9 +16,15 @@ const dtos = Object.values(dtoMaps);
 const services = Object.values(serviceMaps);
 const controllers = Object.values(constollerMaps);
 const providers = [...subscribers, ...dtos, ...services];
+/**
+ * 内容模块
+ *
+ * @export
+ * @class ContentModule
+ */
 @Module({
     imports: [
-        // UserModule,
+        UserModule,
         TypeOrmModule.forFeature([...entities, ...repositories]),
     ],
     controllers,

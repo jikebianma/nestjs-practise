@@ -5,6 +5,12 @@ import { Repository } from 'typeorm';
 import { CreateCommentDto } from '../dtos';
 import { Comment } from '../entities';
 
+/**
+ * 文章评论服务
+ *
+ * @export
+ * @class CommentService
+ */
 @Injectable()
 export class CommentService {
     constructor(
@@ -12,7 +18,15 @@ export class CommentService {
         private commentRepository: Repository<Comment>,
     ) {}
 
-    async create(data: CreateCommentDto,user:User) {
+    /**
+     * 发表评论
+     *
+     * @param {CreateCommentDto} data
+     * @param {User} user
+     * @returns
+     * @memberof CommentService
+     */
+    async create(data: CreateCommentDto, user: User) {
         const item = await this.commentRepository.save({
             ...data,
             creator: user,
@@ -20,6 +34,13 @@ export class CommentService {
         return this.commentRepository.findOneOrFail(item.id);
     }
 
+    /**
+     * 删除评论
+     *
+     * @param {string} id
+     * @returns
+     * @memberof CommentService
+     */
     async delete(id: string) {
         const item = await this.commentRepository.findOneOrFail(id);
         return await this.commentRepository.remove(item);

@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
+import { SelectQueryBuilder } from 'typeorm';
 /** ****************************************** Time Util **************************************** */
 /**
  * 时间生成器参数接口
@@ -18,3 +19,7 @@ export interface TimeOptions {
  * 数据库连接配置
  */
 export type DbOption = TypeOrmModuleOptions & { [key: string]: any };
+
+export type QueryHook<Entity> = (
+    hookQuery: SelectQueryBuilder<Entity>,
+) => Promise<SelectQueryBuilder<Entity>>;

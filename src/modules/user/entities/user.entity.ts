@@ -9,6 +9,12 @@ import {
 } from 'typeorm';
 import { AccessToken } from './access-token.entity';
 
+/**
+ * 用户模型
+ *
+ * @export
+ * @class User
+ */
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn('uuid')
@@ -42,7 +48,7 @@ export class User {
             to: (date) => date,
         },
     })
-    created_at!: Date;
+    createdAt!: Date;
 
     /**
      * 用户的登录令牌

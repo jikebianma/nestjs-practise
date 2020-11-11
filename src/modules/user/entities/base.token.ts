@@ -44,5 +44,5 @@ export abstract class BaseToken extends BaseEntity {
             to: (date) => date,
         },
     })
-    created_at!: Date;
+    createdAt!: Date;
 }

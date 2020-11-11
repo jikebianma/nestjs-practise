@@ -28,3 +28,14 @@ export enum DbOptionsType {
     // 用于配置文件
     CONFIG = 'config',
 }
+
+/**
+ * 数据库排序方案
+ *
+ * @export
+ * @enum {number}
+ */
+export enum DbOrderType {
+    ASC = 'asc',
+    DESC = 'desc',
+}

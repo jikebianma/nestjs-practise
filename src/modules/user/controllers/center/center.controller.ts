@@ -5,6 +5,13 @@ import { User } from '../../entities';
 import { JwtAuthGuard } from '../../guards';
 import { UserService } from '../../services';
 
+/**
+ * 用户中心
+ *
+ * @export
+ * @class CenterController
+ * @extends {BaseController}
+ */
 @Controller('center')
 export class CenterController extends BaseController {
     constructor(private readonly userService: UserService) {
@@ -23,8 +30,7 @@ export class CenterController extends BaseController {
     @SerializeOptions({
         groups: ['user-item'],
     })
-    // @UseInterceptors(ClassSerializerInterceptor)
     async getProfile(@ReqUser() user: User) {
-        return this.userService.findOneByIdOrFail(user.id);
+        return this.userService.findOneById(user.id);
     }
 }

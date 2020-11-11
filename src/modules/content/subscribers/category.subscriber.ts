@@ -3,6 +3,13 @@ import crypto from 'crypto';
 import { EventSubscriber, InsertEvent } from 'typeorm';
 import { Category } from '../entities';
 
+/**
+ * 分类模型观察者
+ *
+ * @export
+ * @class CategorySubscriber
+ * @extends {BaseSubscriber<Category>}
+ */
 @EventSubscriber()
 export class CategorySubscriber extends BaseSubscriber<Category> {
     listenTo() {
@@ -10,7 +17,7 @@ export class CategorySubscriber extends BaseSubscriber<Category> {
     }
 
     /**
-     * 插入数据前置事件
+     * 在添加分类时,如果没有设置slug则自动生成一个唯一值的slug
      *
      * @param {InsertEvent<Category>} event
      * @memberof CategorySubscriber

@@ -10,9 +10,16 @@ import {
 import { ReqUser } from '../../decorators';
 import { AuthenticationDto } from '../../dtos';
 import { User } from '../../entities';
-import { JwtAuthGuard } from '../../guards';
+import { JwtAuthGuard, LocalAuthGuard } from '../../guards';
 import { AuthService } from '../../services';
 
+/**
+ * 用户认证控制器
+ *
+ * @export
+ * @class AuthController
+ * @extends {BaseController}
+ */
 @Controller('auth')
 export class AuthController extends BaseController {
     constructor(private readonly authService: AuthService) {
@@ -28,10 +35,10 @@ export class AuthController extends BaseController {
      * @memberof AuthController
      */
     @Post('login')
-    // @UseGuards(LocalAuthGuard)
+    @UseGuards(LocalAuthGuard)
     async login(
         @ReqUser() user: User,
-        @Body(new ValidationPipe()) body: AuthenticationDto,
+        @Body(new ValidationPipe()) _data: AuthenticationDto,
     ) {
         return { token: await this.authService.login(user) };
     }

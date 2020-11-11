@@ -5,11 +5,25 @@ import {
     IsTreeUniqueExist,
 } from '@/core';
 import { Injectable } from '@nestjs/common';
-import { IsNotEmpty, IsOptional, IsUUID, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsUUID,
+    MaxLength,
+} from 'class-validator';
 import { getManager } from 'typeorm';
 import { Category } from '../entities';
 import { CategoryRepository } from '../repositories';
 import { UpdateCategoryDto } from './update-category.dto';
+
+/**
+ * 分类添加数据验证
+ *
+ * @export
+ * @class CreateCategoryDto
+ */
 @Injectable()
 @DtoValidationoOptions({ groups: ['create'] })
 export class CreateCategoryDto {
@@ -56,6 +70,11 @@ export class CreateCategoryDto {
         },
     )
     slug?: string;
+
+    @Transform((value) => Number(value))
+    @IsNumber(undefined, { message: '排序必须为整数' })
+    @IsOptional()
+    order?: number;
 
     // 总是可选
     @IsOptional({ always: true })

@@ -14,6 +14,13 @@ import {
 } from 'typeorm';
 import { Article } from './article.entity';
 
+/**
+ * 评论模型
+ *
+ * @export
+ * @class Comment
+ * @extends {BaseEntity}
+ */
 @Entity('content_comments')
 @Tree('nested-set')
 export class Comment extends BaseEntity {
@@ -51,5 +58,5 @@ export class Comment extends BaseEntity {
             to: (date) => date,
         },
     })
-    created_at!: Date;
+    createdAt!: Date;
 }

@@ -6,7 +6,7 @@ import { FastifyReply as Response } from 'fastify';
 import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
 import { AccessToken, RefreshToken, User } from '../entities';
-import { JwtPayload, UserConfig } from '../interface';
+import { JwtPayload, UserConfig } from '../types';
 
 /**
  * 令牌服务

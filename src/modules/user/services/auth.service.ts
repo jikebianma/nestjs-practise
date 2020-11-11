@@ -4,12 +4,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { FastifyRequest as Request } from 'fastify';
 import { ExtractJwt } from 'passport-jwt';
 import { User } from '../entities';
-import { UserConfig } from '../interface';
+import { UserConfig } from '../types';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
 
 /**
- * Auth服务
+ * 用户认证服务
  *
  * @export
  * @class AuthService
@@ -77,7 +77,7 @@ export class AuthService {
     }
 
     /**
-     * 导出Jwt模块
+     * 注册Jwt模块
      *
      * @static
      * @returns

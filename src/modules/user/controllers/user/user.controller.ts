@@ -14,19 +14,28 @@ import { classToPlain } from 'class-transformer';
 import { QueryUserDto, UpdateUserDto } from '../../dtos';
 import { User } from '../../entities';
 import { JwtAuthGuard } from '../../guards';
-// import { classToPlain } from 'class-transformer';
-// import { QueryUserDto, UpdateUserDto } from '../../dtos';
-// import { User } from '../../entities';
-// import { JwtAuthGuard } from '../../guards';
 import { UserService } from '../../services';
 
+/**
+ * 用户管理
+ *
+ * @export
+ * @class UserController
+ * @extends {BaseController}
+ */
 @Controller('manage')
 export class UserController extends BaseController {
     constructor(private readonly userService: UserService) {
         super();
-        this.userService;
     }
 
+    /**
+     * 用户分页列表
+     *
+     * @param {QueryUserDto} { page, limit, actived }
+     * @returns
+     * @memberof UserController
+     */
     @Get()
     @UseGuards(JwtAuthGuard)
     async index(@Query() { page, limit, actived }: QueryUserDto) {
@@ -44,6 +53,13 @@ export class UserController extends BaseController {
         };
     }
 
+    /**
+     * 一个用户的详细信息
+     *
+     * @param {User} user
+     * @returns {Promise<User>}
+     * @memberof UserController
+     */
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     @SerializeOptions({
@@ -53,9 +69,16 @@ export class UserController extends BaseController {
         @Param('id', new ParseUUIDEntityPipe(User))
         user: User,
     ): Promise<User> {
-        return this.userService.findOneByIdOrFail(user.id);
+        return this.userService.findOneById(user.id);
     }
 
+    /**
+     * 更新用户信息
+     *
+     * @param {UpdateUserDto} updateUserDto
+     * @returns {Promise<User>}
+     * @memberof UserController
+     */
     @Patch()
     @UseGuards(JwtAuthGuard)
     @SerializeOptions({
@@ -68,12 +91,19 @@ export class UserController extends BaseController {
         return await this.userService.update(updateUserDto);
     }
 
+    /**
+     * 删除用户信息
+     *
+     * @param {User} user
+     * @returns
+     * @memberof UserController
+     */
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     @SerializeOptions({
         groups: ['user-item'],
     })
-    async remove(@Param('id', new ParseUUIDEntityPipe(User)) user: User) {
-        return await this.userService.remove(user);
+    async destroy(@Param('id', new ParseUUIDEntityPipe(User)) user: User) {
+        return await this.userService.delete(user);
     }
 }

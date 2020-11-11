@@ -1,4 +1,10 @@
-import { databasePath, dbOption, defaultDbName } from '@/core';
+import {
+    databasePath,
+    dbOption,
+    defaultDbName,
+    EnviromentType,
+    environment,
+} from '@/core';
 import chalk from 'chalk';
 import ora from 'ora';
 import { matchGlobs, panic, requireDefault, requirePaths } from '../../common';
@@ -6,6 +12,7 @@ import { makeCurrentDb, runSeeder } from '../functions';
 import { CLIDbOption, DbSeedArguments, SeederConstructor } from '../types';
 
 async function seederRunner(spinner: ora.Ora, args: DbSeedArguments) {
+    const fileExt = environment() === EnviromentType.PROD ? '.js' : '.ts';
     const cname = args.connection ?? defaultDbName();
     await makeCurrentDb(cname, spinner);
     const options: CLIDbOption = dbOption<CLIDbOption>(cname);
@@ -13,7 +20,9 @@ async function seederRunner(spinner: ora.Ora, args: DbSeedArguments) {
     // 根据此连接的'factories'配置require所有的factory文件
     spinner.start('Including Factories');
     const factoryFiles = matchGlobs(
-        options!.factories || [databasePath('factories/**/*.factory{.js,.ts}')],
+        options!.factories || [
+            databasePath(`factories/**/*.factory${fileExt}`),
+        ],
         {},
         true,
     );
@@ -28,7 +37,7 @@ async function seederRunner(spinner: ora.Ora, args: DbSeedArguments) {
     // 如果命令行指定class选项则只获取指定seeder,没有则使用默认的DatabaseSeeder类
     spinner.start('Including Seeders');
     const seedFiles = matchGlobs(
-        options!.seeds || [databasePath('seeder/**/*.seed{.js,.ts}')],
+        options!.seeds || [databasePath(`seeder/**/*.seed${fileExt}`)],
         {},
         true,
     );

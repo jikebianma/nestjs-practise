@@ -25,6 +25,12 @@ const providers = [
     ...guards,
     ...services,
 ];
+/**
+ * 用户模块
+ *
+ * @export
+ * @class UserModule
+ */
 @Module({
     imports: [
         PassportModule,

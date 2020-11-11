@@ -3,6 +3,13 @@ import { BaseToken } from './base.token';
 import { RefreshToken } from './refresh-token.entity';
 import { User } from './user.entity';
 
+/**
+ * 用户认证token模型
+ *
+ * @export
+ * @class AccessToken
+ * @extends {BaseToken}
+ */
 @Entity('user_access_tokens')
 export class AccessToken extends BaseToken {
     /**

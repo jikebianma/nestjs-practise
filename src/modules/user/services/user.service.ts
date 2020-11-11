@@ -1,20 +1,22 @@
+import { QueryHook } from '@/core';
 import { Injectable } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
-import { SelectQueryBuilder } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
-import { CreateUserDto, UpdateUserDto } from '../dtos';
+import { CreateUserDto, QueryUserDto, UpdateUserDto } from '../dtos';
 import { User } from '../entities';
 import { UserRepository } from '../repositories';
 
+// 用户查询接口
 type FindParams = {
-    actived?: boolean;
-    disabled?: boolean;
+    [key in keyof Omit<QueryUserDto, 'limit' | 'page'>]: QueryUserDto[key];
 };
 
-type FindHook = (
-    hookQuery: SelectQueryBuilder<User>,
-) => Promise<SelectQueryBuilder<User>>;
-
+/**
+ * 用户管理服务
+ *
+ * @export
+ * @class UserService
+ */
 @Injectable()
 export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
@@ -28,7 +30,7 @@ export class UserService {
      */
     async create(data: CreateUserDto) {
         const user = await this.userRepository.save(data);
-        return await this.findOneByIdOrFail(user.id);
+        return await this.findOneById(user.id);
     }
 
     /**
@@ -40,10 +42,10 @@ export class UserService {
      */
     async update(data: UpdateUserDto) {
         const user = await this.userRepository.save(data);
-        return await this.findOneByIdOrFail(user.id);
+        return await this.findOneById(user.id);
     }
 
-    async remove(item: User) {
+    async delete(item: User) {
         return await this.userRepository.remove(item);
     }
 
@@ -51,11 +53,11 @@ export class UserService {
      * 根据用户用户凭证查询用户
      *
      * @param {string} credential
-     * @param {FindHook} [callback]
-     * @returns {(Promise<User | undefined>)}
+     * @param {QueryHook<User>} [callback]
+     * @returns
      * @memberof UserService
      */
-    async findOneByCredential(credential: string, callback?: FindHook) {
+    async findOneByCredential(credential: string, callback?: QueryHook<User>) {
         let query = this.userRepository.buildBaseQuery();
         if (callback) {
             query = await callback(query);
@@ -68,31 +70,19 @@ export class UserService {
     }
 
     /**
-     * 通过 ID查找用户
+     * 根据ID查询用户
      *
      * @param {string} id
-     * @param {FindHook} [callback]
+     * @param {QueryHook<User>} [callback]
      * @returns
      * @memberof UserService
      */
-    async findOneById(id: string, callback?: FindHook) {
+    async findOneById(id: string, callback?: QueryHook<User>) {
         let query = this.userRepository.buildBaseQuery();
         if (callback) {
             query = await callback(query);
         }
-        return query.where('u.id = :id', { id }).getOne();
-    }
-
-    /**
-     * 根据ID查找用户,查找失败抛出异常
-     *
-     * @param {string} id
-     * @param {FindHook} [callback]
-     * @returns
-     * @memberof UserService
-     */
-    async findOneByIdOrFail(id: string, callback?: FindHook) {
-        const user = await this.findOneById(id, callback);
+        const user = await query.where('u.id = :id', { id }).getOne();
         if (!user) {
             throw new EntityNotFoundError(User, id);
         }
@@ -103,49 +93,30 @@ export class UserService {
      * 根据对象条件查找用户,不存在则抛出异常
      *
      * @param {{ [key: string]: any }} condition
-     * @param {FindHook} [callback]
+     * @param {QueryHook<User>} [callback]
      * @returns
      * @memberof UserService
      */
     async findOneByCondition(
         condition: { [key: string]: any },
-        callback?: FindHook,
+        callback?: QueryHook<User>,
     ) {
         let query = this.userRepository.buildBaseQuery();
         if (callback) {
             query = await callback(query);
         }
-        let firstAdded = false;
-        for (const key in condition) {
-            if (!firstAdded) {
-                query = query.where(`u.${key} = :${key}`, {
-                    [key]: condition[key],
-                });
-                firstAdded = true;
-            } else {
-                query = query.andWhere(`u.${key} = :${key}`, {
-                    [key]: condition[key],
-                });
-            }
-        }
-        return query.getOne();
-    }
-
-    /**
-     * 根据对象条件查找用户
-     *
-     * @param {{ [key: string]: any }} condition
-     * @param {FindHook} [callback]
-     * @returns
-     * @memberof UserService
-     */
-    async findOneByConditionOrFail(
-        condition: { [key: string]: any },
-        callback?: FindHook,
-    ) {
-        const user = await this.findOneByCondition(condition, callback);
+        const wheres = Object.fromEntries(
+            Object.entries(condition).map(([key, value]) => [
+                `user.${key}`,
+                value,
+            ]),
+        );
+        const user = query.where(wheres).getOne();
         if (!user) {
-            throw new EntityNotFoundError(User, JSON.stringify(condition));
+            throw new EntityNotFoundError(
+                User,
+                Object.keys(condition).join(','),
+            );
         }
         return user;
     }
@@ -172,20 +143,17 @@ export class UserService {
      * @memberof UserService
      */
     protected async getListQuery(params: FindParams = {}) {
-        const { actived, disabled } = params;
-        let isAdded = false;
+        const { actived, orderBy } = params;
+        const condition: { [key: string]: any } = {};
         let query = this.userRepository.buildBaseQuery();
         if (actived !== undefined && typeof actived === 'boolean') {
-            query = isAdded
-                ? query.andWhere('u.actived = :actived', { actived })
-                : query.where('u.actived = :actived', { actived });
-            isAdded = true;
+            condition['user.actived'] = actived;
         }
-        if (disabled !== undefined && typeof disabled === 'boolean') {
-            query = isAdded
-                ? query.andWhere('u.disabled = :disabled', { disabled })
-                : query.where('u.disabled = :disabled', { disabled });
-            isAdded = true;
+        if (orderBy) {
+            query = query.orderBy(`user.${orderBy}`, 'ASC');
+        }
+        if (Object.keys(condition).length > 0) {
+            query = query.where(condition);
         }
         return query;
     }

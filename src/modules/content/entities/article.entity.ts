@@ -16,6 +16,13 @@ import {
 import { Category } from './category.entity';
 import { Comment } from './comment.entity';
 
+/**
+ * 文章模型
+ *
+ * @export
+ * @class Article
+ * @extends {BaseEntity}
+ */
 @Entity('content_articles')
 export class Article extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -73,7 +80,7 @@ export class Article extends BaseEntity {
             to: (date?: Date | null) => date || null,
         },
     })
-    published_at?: Date | null;
+    publishedAt?: Date | null;
 
     @CreateDateColumn({
         comment: '创建时间',
@@ -82,7 +89,7 @@ export class Article extends BaseEntity {
             to: (date) => date,
         },
     })
-    created_at!: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({
         comment: '更新时间',
@@ -91,5 +98,5 @@ export class Article extends BaseEntity {
             to: (date) => date,
         },
     })
-    updated_at!: Date;
+    updatedAt!: Date;
 }

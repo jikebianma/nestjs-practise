@@ -63,11 +63,14 @@ export default class ContentSeeder extends BaseSeeder {
         data: ICategoryData[],
         parent?: Category,
     ): Promise<void> {
+        let order = 0;
         for (const item of data) {
             const category = new Category();
             category.name = item.name;
+            category.order = order;
             if (parent) category.parent = parent;
             await this.em.save(category);
+            order++;
             if (item.children) {
                 await this.loadCategories(item.children, category);
             }

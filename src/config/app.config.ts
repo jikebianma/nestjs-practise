@@ -1,5 +1,7 @@
 import { AppConfig, ConfigRegister, env } from '@/core';
-
+/**
+ * 应用配置
+ */
 export const app: ConfigRegister<AppConfig> = () => ({
     debug: env('APP_DEBUG', (v) => JSON.parse(v), true),
     timezone: env('APP_TIMEZONE', 'Asia/Shanghai'),
