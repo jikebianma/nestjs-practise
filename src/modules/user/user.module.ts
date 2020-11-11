@@ -33,6 +33,6 @@ const providers = [
     ],
     controllers,
     providers,
-    exports: [...services, ...guards, TypeOrmModule.forFeature(repositories)],
+    exports: [...services, TypeOrmModule.forFeature(repositories)],
 })
 export class UserModule {}

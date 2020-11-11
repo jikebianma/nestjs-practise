@@ -1,6 +1,7 @@
 import { defineFactory } from '@/console/libs';
 import { Article, Category, Comment } from '@/modules/content/entities';
 import { User } from '@/modules/user/entities';
+// import { User } from '@/modules/user/entities';
 import Faker from 'faker';
 
 export type IArticleFactoryOptions = Partial<{
@@ -10,7 +11,9 @@ export type IArticleFactoryOptions = Partial<{
     isPublished: boolean;
     categories: Category[];
     comments: Comment[];
-}> & { author: User };
+}> & {
+    author: User;
+};
 defineFactory(
     Article,
     async (faker: typeof Faker, options?: IArticleFactoryOptions) => {
@@ -26,7 +29,7 @@ defineFactory(
             article.summary = options.summary;
         }
         article.body =
-            article.body ??
+            options.body ??
             faker.lorem.paragraph(Math.floor(Math.random() * 500) + 1);
         article.isPublished = article.isPublished ?? Math.random() >= 0.5;
         article.author = options.author!;

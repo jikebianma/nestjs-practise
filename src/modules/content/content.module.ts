@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from '../user';
+// import { UserModule } from '../user';
 import * as constollerMaps from './controllers';
 import * as dtoMaps from './dtos';
 import * as entitieMaps from './entities';
@@ -17,7 +17,7 @@ const controllers = Object.values(constollerMaps);
 const providers = [...subscribers, ...dtos, ...services];
 @Module({
     imports: [
-        UserModule,
+        // UserModule,
         TypeOrmModule.forFeature([...entities, ...repositories]),
     ],
     controllers,

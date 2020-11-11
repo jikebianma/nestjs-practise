@@ -14,12 +14,17 @@ import { classToPlain } from 'class-transformer';
 import { QueryUserDto, UpdateUserDto } from '../../dtos';
 import { User } from '../../entities';
 import { JwtAuthGuard } from '../../guards';
+// import { classToPlain } from 'class-transformer';
+// import { QueryUserDto, UpdateUserDto } from '../../dtos';
+// import { User } from '../../entities';
+// import { JwtAuthGuard } from '../../guards';
 import { UserService } from '../../services';
 
 @Controller('manage')
 export class UserController extends BaseController {
     constructor(private readonly userService: UserService) {
         super();
+        this.userService;
     }
 
     @Get()
@@ -39,7 +44,7 @@ export class UserController extends BaseController {
         };
     }
 
-    @Get()
+    @Get(':id')
     @UseGuards(JwtAuthGuard)
     @SerializeOptions({
         groups: ['user-item'],

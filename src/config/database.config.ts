@@ -36,6 +36,7 @@ export const database: ConfigRegister<DatabaseConfig> = () => ({
         },
     ],
     common: {
+        charset: 'utf8mb4',
         dropSchema: false,
         synchronize: false,
         logging: ['error'],

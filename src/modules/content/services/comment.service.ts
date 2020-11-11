@@ -12,7 +12,7 @@ export class CommentService {
         private commentRepository: Repository<Comment>,
     ) {}
 
-    async create(data: CreateCommentDto, user: User) {
+    async create(data: CreateCommentDto,user:User) {
         const item = await this.commentRepository.save({
             ...data,
             creator: user,

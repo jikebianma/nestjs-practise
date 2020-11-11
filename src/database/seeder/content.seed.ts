@@ -90,13 +90,14 @@ export default class ContentSeeder extends BaseSeeder {
                     `article content file ${contentPath} not exits!`,
                 );
             }
+            const user = await this.em.findOneOrFail(User, {
+                where: { username: item.author },
+            });
             const options: IArticleFactoryOptions = {
                 title: item.title,
                 body: fs.readFileSync(contentPath, 'utf8'),
                 isPublished: true,
-                author: (await this.em.findOne(User, {
-                    where: { username: item.author },
-                }))!,
+                author: user,
             };
             if (item.summary) {
                 options.summary = item.summary;
@@ -114,7 +115,7 @@ export default class ContentSeeder extends BaseSeeder {
             );
         }
         const redoms = await this.factory(Article)<IArticleFactoryOptions>({
-            author: this.randItemData(await this.em.find(User)),
+            author: this.randItemData(allUsers),
             categories: this.randListData(allCates),
         }).createMany(100);
         for (const redom of redoms) {

@@ -10,7 +10,7 @@ import {
 import { ReqUser } from '../../decorators';
 import { AuthenticationDto } from '../../dtos';
 import { User } from '../../entities';
-import { JwtAuthGuard, LocalAuthGuard } from '../../guards';
+import { JwtAuthGuard } from '../../guards';
 import { AuthService } from '../../services';
 
 @Controller('auth')
@@ -28,7 +28,7 @@ export class AuthController extends BaseController {
      * @memberof AuthController
      */
     @Post('login')
-    @UseGuards(LocalAuthGuard)
+    // @UseGuards(LocalAuthGuard)
     async login(
         @ReqUser() user: User,
         @Body(new ValidationPipe()) body: AuthenticationDto,

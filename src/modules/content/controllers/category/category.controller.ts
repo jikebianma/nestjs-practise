@@ -1,5 +1,5 @@
 import { BaseController, ParseUUIDEntityPipe } from '@/core';
-import { JwtAuthGuard } from '@/modules/user';
+// import { JwtAuthGuard } from '@/modules/user';
 import {
     Body,
     Controller,
@@ -8,7 +8,6 @@ import {
     Param,
     Patch,
     Post,
-    UseGuards,
 } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dtos';
 import { Category } from '../../entities';
@@ -33,7 +32,7 @@ export class CategoryController extends BaseController {
     }
 
     @Post()
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     async store(
         @Body()
         data: CreateCategoryDto,
@@ -42,7 +41,7 @@ export class CategoryController extends BaseController {
     }
 
     @Patch()
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     async update(
         @Body()
         data: UpdateCategoryDto,
@@ -51,7 +50,7 @@ export class CategoryController extends BaseController {
     }
 
     @Delete(':id')
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     async destroy(
         @Param('id', new ParseUUIDEntityPipe(Category)) category: Category,
     ) {

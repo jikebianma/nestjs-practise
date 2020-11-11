@@ -3,14 +3,7 @@ import { CreateCommentDto } from '@/modules/content/dtos';
 import { CommentService } from '@/modules/content/services';
 import { JwtAuthGuard, ReqUser } from '@/modules/user';
 import { User } from '@/modules/user/entities';
-import {
-    Body,
-    Controller,
-    Delete,
-    Param,
-    Post,
-    UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { Comment } from '../../entities';
 
 @Controller('comments')
@@ -24,13 +17,13 @@ export class CommentController extends BaseController {
     async store(
         @Body()
         data: CreateCommentDto,
-        @ReqUser() user: User,
+        @ReqUser() user: User
     ) {
-        return await this.commentService.create(data, user);
+        return await this.commentService.create(data,user);
     }
 
     @Delete(':id')
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     async destroy(
         @Param('id', new ParseUUIDEntityPipe(Comment)) comment: Comment,
     ) {
